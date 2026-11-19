@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/oaqf/schemas/policy.schema.json",
+  "title": "OAQF Policy Profile",
+  "description": "Proposed schema for a machine-readable OAQF policy profile. Replace the example schema identifier when a stable project domain is established.",
+  "type": "object",
+  "required": ["schema_version", "framework", "profile", "principles"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "framework": { "const": "OAQF" },
+    "profile": {
+      "type": "object",
+      "required": ["id", "name", "status"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["proposed", "draft", "stable", "deprecated"] }
+      },
+      "additionalProperties": false
+    },
+    "principles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "requirement", "level"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Z]{3}-[0-9]{3}$" },
+          "category": { "type": "string", "minLength": 1 },
+          "requirement": { "type": "string", "minLength": 1 },
+          "level": { "enum": ["must", "must_not", "should", "should_not", "may"] },
+          "evaluation": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "evaluation": { "type": "object" }
+  },
+  "additionalProperties": false
+}
