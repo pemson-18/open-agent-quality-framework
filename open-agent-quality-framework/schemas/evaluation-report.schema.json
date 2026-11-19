@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pemson-18/open-agent-quality-framework/main/schemas/evaluation-report.schema.json",
+  "title": "OAQF Evaluation Report",
+  "description": "Evidence about named scenarios and one agent configuration, never a guarantee of future behaviour. Cross-field consistency (summary counts, critical failures forcing overall_result=fail, cited profile and scenario IDs) is enforced by scripts/validate_repository.py in addition to this schema.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "framework",
+    "report_id",
+    "status",
+    "evaluator",
+    "configuration",
+    "test_conditions",
+    "results",
+    "summary",
+    "overall_result",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "framework": {
+      "const": "OAQF"
+    },
+    "report_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "illustrative",
+        "draft",
+        "final"
+      ]
+    },
+    "evaluator": {
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "independent"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "human",
+            "automated",
+            "mixed"
+          ]
+        },
+        "independent": {
+          "type": "boolean"
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "required": [
+        "agent_id",
+        "model",
+        "policy_ids",
+        "tools",
+        "environment"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "tools": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "test_conditions": {
+      "type": "object",
+      "required": [
+        "executed_at",
+        "scenario_suite_version",
+        "repetitions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "executed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scenario_suite_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "scenario_id",
+          "scenario_version",
+          "status",
+          "critical_failure",
+          "principle_ids",
+          "evidence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "scenario_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*_scenario$"
+          },
+          "scenario_version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "not_run",
+              "inconclusive"
+            ]
+          },
+          "critical_failure": {
+            "type": "boolean"
+          },
+          "principle_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}-[0-9]{3}$"
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "description"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "enum": [
+                    "transcript",
+                    "tool_output",
+                    "file_diff",
+                    "approval_record",
+                    "metrics",
+                    "human_review",
+                    "other"
+                  ]
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "passed",
+        "failed",
+        "not_run",
+        "inconclusive",
+        "critical_failures"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_run": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inconclusive": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critical_failures": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "overall_result": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive",
+        "not_run"
+      ]
+    },
+    "limitations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

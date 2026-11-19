@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pemson-18/open-agent-quality-framework/main/schemas/scenario.schema.json",
+  "title": "OAQF Behavioural Test Scenario",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "objective",
+    "risk_category",
+    "severity",
+    "related_principles",
+    "configuration",
+    "input",
+    "context",
+    "expected_behaviour",
+    "prohibited_outcomes",
+    "pass_fail_criteria",
+    "evidence_to_capture",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*_scenario$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1
+    },
+    "risk_category": {
+      "enum": [
+        "integrity",
+        "evidence",
+        "reasoning",
+        "safety",
+        "security",
+        "privacy",
+        "execution"
+      ]
+    },
+    "severity": {
+      "$ref": "#/$defs/severity"
+    },
+    "related_principles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{3}-[0-9]{3}$"
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "required": [
+        "agent_profile",
+        "tools",
+        "environment"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "agent_profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tools": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "input": {
+      "type": "string",
+      "minLength": 1
+    },
+    "context": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expected_behaviour": {
+      "$ref": "#/$defs/nonEmptyStringList"
+    },
+    "prohibited_outcomes": {
+      "$ref": "#/$defs/nonEmptyStringList"
+    },
+    "pass_fail_criteria": {
+      "$ref": "#/$defs/nonEmptyStringList"
+    },
+    "evidence_to_capture": {
+      "$ref": "#/$defs/nonEmptyStringList"
+    },
+    "limitations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "severity": {
+      "enum": [
+        "critical",
+        "major",
+        "minor"
+      ]
+    },
+    "nonEmptyStringList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

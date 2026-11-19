@@ -1,43 +1,182 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.org/oaqf/schemas/policy.schema.json",
+  "$id": "https://raw.githubusercontent.com/pemson-18/open-agent-quality-framework/main/schemas/policy.schema.json",
   "title": "OAQF Policy Profile",
-  "description": "Proposed schema for a machine-readable OAQF policy profile. Replace the example schema identifier when a stable project domain is established.",
+  "description": "Proposed machine-readable OAQF policy profile. Repository CI also checks profile inheritance and scenario references.",
   "type": "object",
-  "required": ["schema_version", "framework", "profile", "principles"],
+  "required": [
+    "schema_version",
+    "framework",
+    "profile",
+    "principles",
+    "evaluation"
+  ],
   "properties": {
-    "schema_version": { "type": "string" },
-    "framework": { "const": "OAQF" },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "framework": {
+      "const": "OAQF"
+    },
+    "extends": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$"
+    },
     "profile": {
       "type": "object",
-      "required": ["id", "name", "status"],
+      "required": [
+        "id",
+        "name",
+        "status"
+      ],
+      "additionalProperties": false,
       "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "name": { "type": "string", "minLength": 1 },
-        "status": { "enum": ["proposed", "draft", "stable", "deprecated"] }
-      },
-      "additionalProperties": false
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "draft",
+            "stable",
+            "deprecated"
+          ]
+        }
+      }
     },
     "principles": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "category", "requirement", "level"],
+        "required": [
+          "id",
+          "category",
+          "requirement",
+          "level",
+          "severity"
+        ],
+        "additionalProperties": false,
         "properties": {
-          "id": { "type": "string", "pattern": "^[A-Z]{3}-[0-9]{3}$" },
-          "category": { "type": "string", "minLength": 1 },
-          "requirement": { "type": "string", "minLength": 1 },
-          "level": { "enum": ["must", "must_not", "should", "should_not", "may"] },
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}-[0-9]{3}$"
+          },
+          "category": {
+            "enum": [
+              "honesty",
+              "truthfulness",
+              "integrity",
+              "intellectual_humility",
+              "safety",
+              "responsibility",
+              "fairness",
+              "respect",
+              "privacy",
+              "transparency",
+              "accountability",
+              "critical_reasoning",
+              "evidence_based_reasoning",
+              "logical_consistency",
+              "intellectual_independence",
+              "uncertainty_calibration",
+              "decision_quality",
+              "execution_integrity",
+              "accuracy",
+              "reliability",
+              "completeness",
+              "clarity",
+              "efficiency",
+              "maintainability",
+              "simplicity",
+              "robustness",
+              "reproducibility"
+            ]
+          },
+          "requirement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "level": {
+            "enum": [
+              "must",
+              "must_not",
+              "should",
+              "should_not",
+              "may"
+            ]
+          },
+          "severity": {
+            "$ref": "#/$defs/severity"
+          },
           "evaluation": {
             "type": "array",
-            "items": { "type": "string" },
-            "uniqueItems": true
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*_scenario$"
+            },
+            "uniqueItems": true,
+            "minItems": 1
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
-    "evaluation": { "type": "object" }
+    "evaluation": {
+      "type": "object",
+      "required": [
+        "report_configuration",
+        "report_test_conditions",
+        "report_limitations",
+        "aggregate_score_must_not_override_critical_failure"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "report_configuration": {
+          "$ref": "#/$defs/requiredDisclosure"
+        },
+        "report_test_conditions": {
+          "$ref": "#/$defs/requiredDisclosure"
+        },
+        "report_limitations": {
+          "$ref": "#/$defs/requiredDisclosure"
+        },
+        "aggregate_score_must_not_override_critical_failure": {
+          "const": true
+        },
+        "scenario_suite_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+      }
+    }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "severity": {
+      "enum": [
+        "critical",
+        "major",
+        "minor"
+      ],
+      "description": "Critical failures gate the evaluation and cannot be offset by aggregate scores."
+    },
+    "requiredDisclosure": {
+      "type": "object",
+      "required": [
+        "required"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "const": true
+        }
+      }
+    }
+  }
 }

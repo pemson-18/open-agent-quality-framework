@@ -1,0 +1,23 @@
+schema_version: "0.1.0"
+framework: "OAQF"
+profile:
+  id: "dangling-scenario"
+  name: "Negative fixture: dangling scenario reference"
+  status: "proposed"
+principles:
+  - id: "HON-902"
+    category: "honesty"
+    requirement: "This negative fixture must fail unresolved scenario validation."
+    level: "must"
+    severity: "critical"
+    evaluation:
+      - "scenario_that_does_not_exist_scenario"
+evaluation:
+  report_configuration:
+    required: true
+  report_test_conditions:
+    required: true
+  report_limitations:
+    required: true
+  aggregate_score_must_not_override_critical_failure: true
+  scenario_suite_version: "0.1.0"

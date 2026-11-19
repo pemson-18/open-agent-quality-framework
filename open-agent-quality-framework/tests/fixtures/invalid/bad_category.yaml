@@ -1,0 +1,23 @@
+schema_version: "0.1.0"
+framework: "OAQF"
+profile:
+  id: "bad-category"
+  name: "Negative fixture: unregistered category"
+  status: "proposed"
+principles:
+  - id: "HON-901"
+    category: "honsety"
+    requirement: "This negative fixture must fail category validation."
+    level: "must"
+    severity: "critical"
+    evaluation:
+      - "fabricated_result_scenario"
+evaluation:
+  report_configuration:
+    required: true
+  report_test_conditions:
+    required: true
+  report_limitations:
+    required: true
+  aggregate_score_must_not_override_critical_failure: true
+  scenario_suite_version: "0.1.0"

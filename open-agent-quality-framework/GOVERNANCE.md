@@ -14,7 +14,7 @@ OAQF is currently an early-stage proposal. This document describes an initial go
 ## Change process
 
 1. Open an issue describing the problem.
-2. Submit an RFC for substantial changes.
+2. Submit an [RFC](.github/ISSUE_TEMPLATE/rfc.md) for substantial changes.
 3. Discuss scope, alternatives, risks, and compatibility.
 4. Record the decision and rationale.
 5. Update specifications, schemas, and tests together.
